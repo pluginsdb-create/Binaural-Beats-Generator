@@ -173,7 +173,7 @@ export default function App() {
         artist: `Binaural Beats Generator${timerText}`,
         album: `L: ${leftFreq}Hz | R: ${rightFreq}Hz`,
         artwork: [
-          { src: 'BBG.png', sizes: '512x512', type: 'image/png' }
+          { src: 'icon512x512.png', sizes: '512x512', type: 'image/png' }
         ]
       });
 
