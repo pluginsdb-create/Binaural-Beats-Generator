@@ -7,7 +7,6 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
-    base: './',
     plugins: [
       react(), 
       tailwindcss(),
@@ -23,12 +22,17 @@ export default defineConfig(({mode}) => {
           display: 'standalone',
           icons: [
             {
-              src: 'BBG.png',
+              src: 'https://picsum.photos/seed/audio/192/192',
+              sizes: '192x192',
+              type: 'image/png'
+            },
+            {
+              src: 'https://picsum.photos/seed/audio/512/512',
               sizes: '512x512',
               type: 'image/png'
             },
             {
-              src: 'BBG.png',
+              src: 'https://picsum.photos/seed/audio/512/512',
               sizes: '512x512',
               type: 'image/png',
               purpose: 'any maskable'
