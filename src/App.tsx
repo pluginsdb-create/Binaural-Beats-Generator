@@ -115,12 +115,14 @@ export default function App() {
 
     if (playing) {
       if (audioRef.current) {
-        audioRef.current.volume = 0.01; // Tiny volume to satisfy some OS requirements
+        // Explicitly set playing state before interaction to prime some systems
+        navigator.mediaSession.playbackState = 'playing';
+        audioRef.current.volume = 0.1; // Slightly higher but still negligible
         audioRef.current.play()
-          .then(() => {
-            navigator.mediaSession.playbackState = 'playing';
-          })
-          .catch(console.error);
+          .catch(err => {
+            console.error('Media Session Play Error:', err);
+            navigator.mediaSession.playbackState = 'paused';
+          });
       }
     } else {
       navigator.mediaSession.playbackState = 'paused';
