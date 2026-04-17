@@ -29,6 +29,7 @@ export default function App() {
   const [activeTimerId, setActiveTimerId] = useState<string | null>(null);
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -167,7 +168,8 @@ export default function App() {
     if ('mediaSession' in navigator) {
       const diff = Math.abs(parseFloat(leftFreq) - parseFloat(rightFreq)).toFixed(2);
       const timerText = timerRemaining !== null ? ` | Timer: ${formatTime(timerRemaining)}` : '';
-      
+      const isAnyPlaying = isPlayingLeft || isPlayingRight;
+
       navigator.mediaSession.metadata = new MediaMetadata({
         title: `Binaural Beat: ${diff} Hz`,
         artist: `Binaural Beats Generator${timerText}`,
@@ -176,6 +178,20 @@ export default function App() {
           { src: 'icon512x512.png', sizes: '512x512', type: 'image/png' }
         ]
       });
+
+      // Update playback state for Android/iOS system UI
+      navigator.mediaSession.playbackState = isAnyPlaying ? 'playing' : 'paused';
+
+      // Sync hidden audio element for background stay-awake and notification
+      if (audioRef.current) {
+        if (isAnyPlaying) {
+          audioRef.current.play().catch(() => {
+            // Auto-play might be blocked until user interaction
+          });
+        } else {
+          audioRef.current.pause();
+        }
+      }
 
       navigator.mediaSession.setActionHandler('play', () => {
         audioEngine.start(parseFloat(leftFreq), parseFloat(rightFreq));
@@ -186,7 +202,7 @@ export default function App() {
       navigator.mediaSession.setActionHandler('pause', stopAll);
       navigator.mediaSession.setActionHandler('stop', stopAll);
     }
-  }, [leftFreq, rightFreq, stopAll, timerRemaining]);
+  }, [leftFreq, rightFreq, stopAll, timerRemaining, isPlayingLeft, isPlayingRight]);
 
   // Update frequencies in real-time if playing
   useEffect(() => {
@@ -452,6 +468,15 @@ export default function App() {
 
       <footer className="w-full text-center py-8 text-[10px] text-gray-600 font-mono uppercase tracking-widest">
       </footer>
+
+      {/* Hidden audio element to trigger system media controls (Android/iOS) */}
+      <audio 
+        ref={audioRef} 
+        loop 
+        playsInline 
+        title="Binaural Beats Background Sync"
+        src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==" 
+      />
     </div>
   );
 }
