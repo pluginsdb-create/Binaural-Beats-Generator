@@ -1,5 +1,5 @@
 {
-  "name": "Binaural Beats Generator",
+  "name": "Binaural Beat Generator",
   "description": "Precision binaural beat generator with dual frequency control, timers, and background playback.",
   "requestFramePermissions": []
 }
