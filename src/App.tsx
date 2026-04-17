@@ -326,8 +326,14 @@ export default function App() {
               setLeftFreq('440.00');
               setRightFreq('444.00');
             }}
-            className="p-4 hardware-card hover:bg-white hover:text-black transition-colors"
-            title="Reset Frequencies"
+            disabled={isPlayingLeft || isPlayingRight}
+            className={cn(
+              "p-4 hardware-card transition-colors",
+              (isPlayingLeft || isPlayingRight) 
+                ? "opacity-30 cursor-not-allowed grayscale" 
+                : "hover:bg-white hover:text-black"
+            )}
+            title={isPlayingLeft || isPlayingRight ? "Cannot reset while playing" : "Reset Frequencies"}
           >
             <RotateCcw size={24} />
           </button>
